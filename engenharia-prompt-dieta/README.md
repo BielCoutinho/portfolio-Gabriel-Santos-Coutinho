@@ -1,12 +1,14 @@
-# 📝 Engenharia de Prompt: Validação de Estruturas XML em LLMs
+# 🥗 Planejador de Dieta Fitness - Engenharia de Prompt & Batalha de Modelos
 
 ## 📝 Descrição do Projeto
-Este projeto consiste no desenvolvimento, estruturação e teste de um **Prompt Avançado em XML** voltado para a criação de aplicações web em uma única página (Single Page Application). [cite_start]O objetivo prático do prompt foi instruir uma Inteligência Artificial a gerar um *Planejador de Dieta Fitness* responsivo e funcional[cite: 5, 7].
+Este projeto consiste no desenvolvimento, estruturação e teste de um **Prompt Avançado em XML** projetado para gerar um *Planejador de Dieta Fitness* em uma página web única (Single Page Application) com HTML5 e CSS3 integrado. O objetivo do artefato foi criar uma interface responsiva e funcional, contendo formulário de usuário, galeria e cálculo automático de dieta.
 
-[cite_start]Desenvolvido por **Gabriel Santos Coutinho** [cite: 3] [cite_start]como parte da disciplina de **Engenharia de Prompt e Aplicações em IA** [cite: 1][cite_start], o repositório centraliza a arquitetura do prompt utilizado e uma análise crítica comparativa ("Batalha de Modelos")[cite: 2, 8]. [cite_start]O prompt foi submetido a 7 Grandes Modelos de Linguagem (ChatGPT, Gemini, Claude, Qwen, DeepSeek, Grok e Maritaca) para avaliar a capacidade de cada um em interpretar tags customizadas e restrições técnicas complexas[cite: 6].
+Desenvolvido por **Gabriel Santos Coutinho** como parte da disciplina de **Engenharia de Prompt e Aplicações em IA**, o repositório centraliza a arquitetura do prompt utilizado e a análise crítica comparativa batizada de "Batalha de Modelos". O prompt estruturado foi submetido a 7 Grandes Modelos de Linguagem (LLMs) do mercado para avaliar a capacidade de interpretação de restrições técnicas, o nível de criatividade e a verbosidade (consumo de tokens) de cada ferramenta.
+
+---
 
 ## ⚙️ O Prompt Estruturado (XML)
-[cite_start]O prompt abaixo foi o artefato principal desenvolvido para este experimento, utilizando a sintaxe XML para isolar escopo, objetivos, diretrizes de design e métricas obrigatórias[cite: 5, 7]:
+O prompt abaixo foi o artefato principal desenvolvido para este experimento, utilizando a sintaxe XML para isolar escopo, objetivos, diretrizes de design e métricas obrigatórias:
 
 ```xml
 <tarefa>
