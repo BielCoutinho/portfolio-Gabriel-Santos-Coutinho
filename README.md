@@ -43,7 +43,6 @@ Gosto de transformar ideias em sistemas úteis, com interfaces bonitas e funcion
 ---
 
 ## 📬 Contato
-https://drive.google.com/file/d/12LXkO4TDL50OAAHSsZdqLEglJ4wsuYTf/view?usp=sharing
 - 📧 **Email**: [gabriel.santos.coutinho2004@gmail.com](mailto:gabriel.santos.coutinho2004@gmail.com)
 - 💼 **LinkedIn**: [linkedin.com/in/gabriel-coutinho-12b40329a](https://www.linkedin.com/in/gabriel-coutinho-12b40329a/)
 - 💬 **WhatsApp**: [Clique para conversar](https://wa.me/5511993389228)
