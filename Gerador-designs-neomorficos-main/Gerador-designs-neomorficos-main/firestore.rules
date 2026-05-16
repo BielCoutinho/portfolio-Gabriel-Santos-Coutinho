@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // --- Validation Blueprints ---
+    
+    function isValidUser(data) {
+      let requiredFields = ['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt'];
+      return data.keys().hasAll(requiredFields) && 
+             data.keys().size() == requiredFields.length &&
+             data.uid == request.auth.uid &&
+             data.role == 'user' && 
+             data.email is string && data.email.size() <= 256 &&
+             data.displayName is string && data.displayName.size() <= 100 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidPreset(data) {
+      let requiredFields = ['name', 'settings', 'authorId', 'isPublic', 'createdAt', 'updatedAt'];
+      return data.keys().hasAll(requiredFields) && 
+             data.keys().size() == requiredFields.length &&
+             data.name is string && data.name.size() <= 100 &&
+             data.authorId == request.auth.uid &&
+             data.isPublic is bool &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp &&
+             isValidSettings(data.settings);
+    }
+
+    function isValidSettings(s) {
+      let keys = ['size', 'radius', 'distance', 'intensity', 'blur', 'color', 'shape', 'lightSource', 'isDarkMode', 'bgImage'];
+      return s.keys().hasAll(['size', 'radius', 'distance', 'intensity', 'blur', 'color', 'shape', 'lightSource', 'isDarkMode']) &&
+             s.size is number && s.size >= 0 && s.size <= 1000 &&
+             s.radius is number && s.radius >= 0 &&
+             s.distance is number && s.distance >= 0 &&
+             s.intensity is number && s.intensity >= 0 && s.intensity <= 0.3 &&
+             s.blur is number && s.blur >= 0 &&
+             s.color is string && s.color.matches('^#[A-Fa-f0-9]{6}$') &&
+             s.shape in ['flat', 'concave', 'convex', 'pressed'] &&
+             s.lightSource in ['top-left', 'top-right', 'bottom-left', 'bottom-right'] &&
+             s.isDarkMode is bool &&
+             (!s.keys().hasAll(['bgImage']) || s.bgImage is string);
+    }
+
+    // --- Match Groups ---
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL']) &&
+                    incoming().displayName is string && incoming().displayName.size() <= 100;
+      allow delete: if false;
+    }
+
+    match /presets/{presetId} {
+      // Secure list query enforcement
+      allow list: if resource.data.isPublic == true || (isSignedIn() && resource.data.authorId == request.auth.uid);
+      allow get: if resource.data.isPublic == true || (isSignedIn() && resource.data.authorId == request.auth.uid);
+      
+      allow create: if isSignedIn() && isValidId(presetId) && isValidPreset(incoming());
+      
+      allow update: if isOwner(existing().authorId) && 
+                    isValidPreset(incoming()) &&
+                    incoming().createdAt == existing().createdAt &&
+                    incoming().authorId == existing().authorId &&
+                    (
+                      // Action: Rename or Toggle Privacy
+                      incoming().diff(existing()).affectedKeys().hasOnly(['name', 'isPublic', 'updatedAt']) ||
+                      // Action: Update Design
+                      incoming().diff(existing()).affectedKeys().hasOnly(['settings', 'updatedAt'])
+                    );
+                    
+      allow delete: if isOwner(existing().authorId);
+    }
+  }
+}

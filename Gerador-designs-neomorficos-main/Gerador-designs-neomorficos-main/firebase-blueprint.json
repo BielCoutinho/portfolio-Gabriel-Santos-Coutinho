@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "User profile and metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "designPreset": {
+      "title": "Design Preset",
+      "description": "Saved neumorphic design settings",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name of the preset" },
+        "settings": { 
+          "type": "object",
+          "properties": {
+            "size": { "type": "number" },
+            "radius": { "type": "number" },
+            "distance": { "type": "number" },
+            "intensity": { "type": "number" },
+            "blur": { "type": "number" },
+            "color": { "type": "string" },
+            "shape": { "type": "string" },
+            "lightSource": { "type": "string" },
+            "isDarkMode": { "type": "boolean" },
+            "bgImage": { "type": "string" }
+          },
+          "required": ["size", "radius", "distance", "intensity", "blur", "color", "shape", "lightSource", "isDarkMode"]
+        },
+        "authorId": { "type": "string" },
+        "isPublic": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "settings", "authorId", "isPublic", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "Individual user records"
+    },
+    "/presets/{presetId}": {
+      "schema": "designPreset",
+      "description": "Shared or private design presets"
+    }
+  }
+}
